@@ -1,43 +1,63 @@
-﻿//using System;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+namespace VigenereCipher
+{
+    class VigenereCipher
+    {
+        /*
+         */
+        static void Main(string[] args)
+        {
+            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            string text = "jak se máš? Ja se mam fajn.";
+            string key = "sdasdasd";
+            int pointer = 0;
 
-//namespace VigenereCipher
-//{
-//    public class VigenereCipher
-//    {
-//        /*  Ci = Ti + Ki (mod m)
-//         *  --------
-//         *  Ci - i-tý znak šifrovaného 
-//         *  Ti - i-tý znak otevřeného 
-//         *  Ki - i-tý znak hesla textu (v případě, že je heslo kratší než text (což je obvyklé) dochází k opakování hesla
-//         *  m - délka abecedy
-//        */
-//        public static string Encipher(char c, char k)
-//        {
-//            index = mod(alphabet.IndexOf(text[i]) + secretNums[i % secretNums.Length], 26);
+            var alphabetArray = alphabet.ToCharArray();
+            var keyArray = key.ToCharArray();
 
-//            string encryptedText = "";
-//            return encryptedText;
-//        }
-//        private static int GetPWKey(char [] password, int passwordLenght, int i)
-//        {
+            foreach (char c in text.ToCharArray())
+            {
+                if (IsEnglishLetter(c))
+                {
+                    char e = Encipher(c, pointer, keyArray, alphabetArray);
+                    pointer = ++pointer % key.Length;
+                    Console.WriteLine(e);
+                }
+                else
+                {
+                    Console.WriteLine(c);
+                }
+            }
+            Console.ReadKey();
 
-//            i++;
-//            if (i == passwordLenght)
-//            {
-//                i = 0;
-//            }
-//            return key;
-//        }
-//        private static int Mod(int n, int b)
-//        {
-//            return n - b * (int)Math.Floor((double)n / b);
+        }
+        private static bool IsEnglishLetter(char c)
+        {
+            return (((c > 64) && (c < 96)) || ((c > 96) && (c < 123)));
+        }
 
-//        }
-//        public static string Decipher(string encryptedText, string key)
-//        {
-//            string decryptedText = "";
-//            return decryptedText;
-//        }
+        private static char Encipher(char c, int pointer, char[] keyArray, char[] alphabetArray)
+        {
+            int i = GetIndexInAlphabet(c);
+            int p = (i + (GetKey(pointer, keyArray))) % 26;
+            return Char.IsUpper(c) ? Char.ToLower(alphabetArray[p]) : alphabetArray[p];
+        }
 
-//    }
-//}
+        private static int GetKey(int pointer, char[] keyArray)
+        {
+            //UpdatePointer(pointer);
+            return GetIndexInAlphabet(keyArray[pointer]);
+
+        }
+        private static int GetIndexInAlphabet(char c)
+        {
+            c = char.ToUpper(c);
+            int index = (int)c.CompareTo('A');
+            return index;
+        }
+    }
+}
