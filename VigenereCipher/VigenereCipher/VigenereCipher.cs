@@ -1,38 +1,42 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 namespace VigenereCipher
 {
-    class VigenereCipher
+    class Programme
     {
         /*
          */
         static void Main(string[] args)
         {
             string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            string text = "jak se máš? Ja se mam fajn.";
-            string key = "sdasdasd";
+            string key = Console.ReadLine();
             int pointer = 0;
 
             var alphabetArray = alphabet.ToCharArray();
             var keyArray = key.ToCharArray();
 
-            foreach (char c in text.ToCharArray())
+
+            using (StreamReader sr = File.OpenText("a.txt"))
+            using (StreamWriter sw = File.AppendText("b.txt"))
             {
-                if (IsEnglishLetter(c))
+                var read = sr.Read();
+                while (read != -1)
                 {
-                    char e = Encipher(c, pointer, keyArray, alphabetArray);
-                    pointer = ++pointer % key.Length;
-                    Console.WriteLine(e);
-                }
-                else
-                {
-                    Console.WriteLine(c);
+                    char c = (char)read;
+                    if (IsEnglishLetter(c))
+                    {
+                        char e = Encipher(c, pointer, keyArray, alphabetArray);
+                        pointer = ++pointer % key.Length;
+                        sw.Write(e);
+                    }
+                    else
+                    {
+                        sw.Write(c);
+                    }
+                    read = sr.Read();
                 }
             }
-            Console.ReadKey();
+
 
         }
         private static bool IsEnglishLetter(char c)
@@ -61,3 +65,7 @@ namespace VigenereCipher
         }
     }
 }
+
+
+
+
